@@ -3,14 +3,9 @@
 - 対象: EV165。
 - 起動: `npm ci` の後、`DATABASE_URL` を設定し、下記の初期化を行って `npm run build && npm start`。
 - デフォルト PORT: 3000。環境変数 `PORT` で変更可。待受: `0.0.0.0`。
-- ブランチ: `main` のみ、デフォルトも `main`。ルートに Dockerfile あり。
+- ブランチ: `main` のみ、デフォルトも `main`。Dockerfile なし。Next.js の通常ビルド・起動経路で検証する。
 - Node.js 22 以上。`GET /health` は HTTP 200 と `{"ok":true,"app":"dummy-nextjs-prisma-nomig"}` を返す。
 
-## Docker
-
-```sh
-docker build -t dummy-nextjs-prisma-nomig .
-```
 
 ## データベース
 
@@ -30,8 +25,6 @@ npm run build
 npm start
 ```
 
-Docker の起動には実際の接続 URL を設定してから `docker run --rm -p 3000:3000 -e DATABASE_URL dummy-nextjs-prisma-nomig` を使用する。
-DB はコンテナから接続可能で、初期化済みであること。Docker build に接続情報は不要。
 
 SQL コンソールで対象 schema を選択し、次のように手動で投入するとトップ画面に表示される。
 schema が検索パスにない場合は、実際の schema 名でテーブルを修飾する。
@@ -46,7 +39,7 @@ INSERT INTO "Item" ("name") VALUES ('manual verification');
 `prisma/migrations` は存在しない。初回の db push はプラットフォームの経路を確認する。
 初回デプロイ後に schema.prisma の Item に `description String?` を追加して commit / push し、再デプロイする。
 SQL / introspect でカラムが未追加であること、migrations 推奨案内が出ることを確認する。
-変更後にローカルから対象 DB に db push を実行しない。Docker や起動スクリプトにも追加しない。
+変更後にローカルから対象 DB に db push を実行しない。ビルドや起動スクリプトにも追加しない。
 画面のクエリが新 schema と不一致で失敗する場合も、DB の未変更確認と区別して記録する。
 
 ## 依存関係の既知事項
